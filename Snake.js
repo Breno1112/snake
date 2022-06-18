@@ -1,8 +1,17 @@
 import Entity from './Entity.js';
 export default class Snake extends Entity{
-    constructor(videoContext, position){
+    constructor(videoContext, position, keyboardHandler){
         super(videoContext, position);
         this.color = "#ff2936"
+        this.keyboardHandler = keyboardHandler;
+        this.setup();
+    }
+
+    setup(){
+        this.keyboardHandler.addListener({name: 'w', callback: () => this.up()});
+        this.keyboardHandler.addListener({name: 's', callback: () => this.down()});
+        this.keyboardHandler.addListener({name: 'a', callback: () => this.left()});
+        this.keyboardHandler.addListener({name: 'd', callback: () => this.right()});
     }
 
     update(){
