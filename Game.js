@@ -11,23 +11,32 @@ export default class Game {
         this.canvas = document.getElementById("screen");
         this.videoContext = this.canvas.getContext('2d');
         this.eventEmitter = new EventEmitter();
-        this.timer = new Timer(5, this.eventEmitter);
         this.keyboardHandler = new KeyboardHandler();
-        this.entities = [];
+        this.timer = new Timer(5, this.eventEmitter);
+        this.eventEmitter.addListener({name: 'update_clock', callback: () => this.update(), times: 1});
+        this.eventEmitter.addListener({name: 'snake_collided', callback: () => this.end(), times: 1});
         this.running = false;
+        this.keyboardHandler.addListener({name: 'r', callback: () => this.restart()});
     }
 
     start(){
         this.repaintBackground();
-        this.eventEmitter.addListener({name: 'update_clock', callback: () => this.update(), times: 1});
-        this.eventEmitter.addListener({name: 'snake_collided', callback: () => this.end(), times: 1});
+        this.entities = [];
         const snakePos = new Vector(0, 0, 10, 10, 1, 0);
         const snake = new Snake(this.videoContext, snakePos, this.keyboardHandler, this.eventEmitter);
         this.entities.push(snake);
         this.generateFood(snake);
         this.timer.start();
         this.running = true;
-        window.game = this;
+    }
+
+    end(){
+        console.log('ended game');
+        this.running = false;
+    }
+
+    restart(){
+        this.start();
     }
 
     update(){
@@ -76,10 +85,5 @@ export default class Game {
                 snake.grow();
             }
         });
-    }
-
-    end(){
-        console.log('ended game');
-        this.running = false;
     }
 }
