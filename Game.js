@@ -12,7 +12,7 @@ export default class Game {
         this.videoContext = this.canvas.getContext('2d');
         this.eventEmitter = new EventEmitter();
         this.keyboardHandler = new KeyboardHandler();
-        this.timer = new Timer(5, this.eventEmitter);
+        this.timer = new Timer(30, this.eventEmitter);
         this.eventEmitter.addListener({name: 'update_clock', callback: () => this.update(), times: 1});
         this.eventEmitter.addListener({name: 'snake_collided', callback: () => this.end(), times: 1});
         this.running = false;
@@ -65,8 +65,8 @@ export default class Game {
     }
 
     generateFoodVector(){
-        const badX = Math. floor(Math. random() * (600 - 0 + 1)) + 0;
-        const badY = Math. floor(Math. random() * (600 - 0 + 1)) + 0;
+        const badX = Math. floor(Math. random() * (590 - 0 + 1)) + 0;
+        const badY = Math. floor(Math. random() * (690 - 0 + 1)) + 0;
         const greatX = badX - (badX % 10);
         const greatY = badY - (badY % 10);
         return new Vector(greatX, greatY, 10, 10, 0, 0);
