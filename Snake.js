@@ -1,8 +1,10 @@
+import { checkCollision } from './CollisionDetection.js';
 import Entity from './Entity.js';
 import Vector from './Vector.js';
 export default class Snake extends Entity{
-    constructor(videoContext, position, keyboardHandler){
+    constructor(videoContext, position, keyboardHandler, eventEmitter){
         super(videoContext, position);
+        this.eventEmitter = eventEmitter;
         this.color = "#ff2936"
         this.keyboardHandler = keyboardHandler;
         this.tail = [];
@@ -20,6 +22,11 @@ export default class Snake extends Entity{
     }
 
     update(){
+        this.lastPosition = Object.assign(Object.create(Object.getPrototypeOf(this.position)), this.position);
+        if (this.tail.length > this.size){
+            this.tail.shift();
+        }
+        this.tail.push(this.lastPosition);
         this.position.x += this.position.xVel * this.position.width;
         this.position.y += this.position.yVel * this.position.height;
         if (this.position.x > this.videoContext.canvas.width) {
@@ -31,11 +38,11 @@ export default class Snake extends Entity{
         } else if (this.position.y > this.videoContext.canvas.height){
             this.position.y = 0;
         }
-        this.lastPosition = Object.assign(Object.create(Object.getPrototypeOf(this.position)), this.position);
-        if (this.tail.length > this.size){
-            this.tail.shift();
+        if(this.ateItself()){
+            this.position.xVel = 0;
+            this.position.yVel = 0;
+            this.eventEmitter.emit({name: 'snake_collided'});
         }
-        this.tail.push(this.lastPosition);
     }
 
     draw(){
@@ -68,5 +75,9 @@ export default class Snake extends Entity{
 
     grow(){
         this.size ++;
+    }
+
+    ateItself(){
+        return checkCollision(this.position, this.tail);
     }
 }
