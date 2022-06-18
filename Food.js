@@ -4,6 +4,7 @@ export default class Food extends Entity{
     constructor(videoContext, position){
         super(videoContext, position);
         this.color = "#FFFFFF";
+        this.food = true;
     }
 
     draw(){

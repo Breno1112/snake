@@ -21,12 +21,13 @@ export default class Game {
         const snakePos = new Vector(0, 0, 10, 10, 1, 0);
         const snake = new Snake(this.videoContext, snakePos, this.keyboardHandler);
         this.entities.push(snake);
-        this.generateFood();
+        this.generateFood(snake);
         this.timer.start();
     }
 
     update(){
         this.repaintBackground();
+        this.checkSnakeAteFood();
         this.entities.forEach(entity => {
             entity.update();
             entity.draw();
@@ -38,11 +39,10 @@ export default class Game {
         this.videoContext.fillRect(0, 0, this.canvas.width, this.canvas.height);
     }
 
-    generateFood(){
+    generateFood(snake){
         var foodPos = this.generateFoodVector();
-        const snake = this.findSnake();
         while (this.checkSingleCollision(foodPos, snake.position) || this.checkCollision(foodPos, snake.tail)){
-            foodPos = this.generateFood();
+            foodPos = this.generateFood(snake);
         }
         const food = new Food(this.videoContext, foodPos);
         this.entities.push(food);
@@ -72,5 +72,16 @@ export default class Game {
 
     checkSingleCollision(vec1, vec2){
         return vec1.x == vec2.x && vec1.y == vec2.y;
+    }
+
+    checkSnakeAteFood(){
+        const snake = this.findSnake();
+        this.entities.forEach((entity, idx) => {
+            if (entity.food && snake.position.x == entity.position.x && snake.position.y == entity.position.y){
+                this.entities.splice(idx);
+                this.generateFood(snake);
+                snake.grow();
+            }
+        });
     }
 }
