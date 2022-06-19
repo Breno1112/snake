@@ -33,6 +33,10 @@ export default class Game {
     end(){
         console.log('ended game');
         this.running = false;
+        this.videoContext.fillStyle="white";
+        this.videoContext.font = "50px Georgia";
+        this.videoContext.fillText("Game over", 150, 300);
+        this.videoContext.fillText("Press R to restart", 100, 400);
     }
 
     restart(){
@@ -61,12 +65,13 @@ export default class Game {
             foodPos = this.generateFood(snake);
         }
         const food = new Food(this.videoContext, foodPos);
+        console.log(foodPos);
         this.entities.push(food);
     }
 
     generateFoodVector(){
         const badX = Math. floor(Math. random() * (590 - 0 + 1)) + 0;
-        const badY = Math. floor(Math. random() * (690 - 0 + 1)) + 0;
+        const badY = Math. floor(Math. random() * (590 - 0 + 1)) + 0;
         const greatX = badX - (badX % 10);
         const greatY = badY - (badY % 10);
         return new Vector(greatX, greatY, 10, 10, 0, 0);
