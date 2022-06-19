@@ -31,7 +31,6 @@ export default class Game {
     }
 
     end(){
-        console.log('ended game');
         this.running = false;
         this.videoContext.fillStyle="white";
         this.videoContext.font = "50px Georgia";
@@ -65,7 +64,6 @@ export default class Game {
             foodPos = this.generateFood(snake);
         }
         const food = new Food(this.videoContext, foodPos);
-        console.log(foodPos);
         this.entities.push(food);
     }
 
